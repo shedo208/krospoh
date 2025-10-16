@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SubMarket — Магазин сабвуферов</title>
+
+ 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0f1724;           
+      --card: #0b1720;
+      --muted: #9aa4b2;
+      --accent: #106b4b;      
+      --accent-2: #ff8a4b;
+      --surface: #0f1724;
+      --light-bg: #f6f8fb;
+      --glass: rgba(255,255,255,0.06);
+      --radius: 12px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(180deg,#f3f7fb 0%, #ffffff 100%);
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+  
+    header{
+      position:sticky; top:0; z-index:1200;
+      background: linear-gradient(90deg, rgba(15,23,36,0.98), rgba(12,18,28,0.98));
+      color:#fff;
+      display:flex; align-items:center; gap:24px;
+      justify-content:space-between;
+      padding:12px 5%;
+      box-shadow:0 6px 18px rgba(10,12,15,0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo img{width:46px;height:46px;object-fit:cover;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.35)}
+    .logo h1{font-size:20px;font-weight:700;letter-spacing:0.2px}
+    nav ul{display:flex;gap:18px;list-style:none}
+    nav a{color:rgba(255,255,255,0.9);text-decoration:none;font-weight:600;padding:8px 10px;border-radius:8px;transition:all .18s}
+    nav a:hover{background:rgba(255,255,255,0.04);color:var(--accent-2)}
+
+    .header-right{display:flex;align-items:center;gap:12px}
+    .auth-btn{
+      background:transparent;border:1px solid rgba(255,255,255,0.12);
+      color:#fff;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer;
+      transition:all .18s;
+    }
+    .auth-btn:hover{background:rgba(255,255,255,0.04)}
+    .cart-btn{
+      display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;border:none;cursor:pointer;box-shadow:0 6px 18px rgba(255,90,31,0.18)
+    }
+    .cart-count{background:rgba(0,0,0,0.12);padding:2px 8px;border-radius:999px;font-weight:700}
+
+    
+    .hero{
+      max-width:1200px;margin:28px auto;padding:36px 5%;border-radius:16px;
+      background:linear-gradient(180deg,#fff 0%, #fbfbff 100%);
+      box-shadow: 0 10px 30px rgba(13,15,20,0.06);
+      display:flex;gap:28px;align-items:center;overflow:hidden;
+    }
+    .hero-left{flex:1}
+    .hero h2{font-size:28px;color:var(--accent);margin-bottom:10px}
+    .hero p{font-size:16px;color:var(--muted);margin-bottom:18px}
+    .hero .cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;padding:12px 18px;border-radius:10px;font-weight:700;text-decoration:none}
+    .hero-visual{width:320px;height:160px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(120deg,#0f1724 0%, #0b1b22 100%);box-shadow:0 12px 30px rgba(12,18,28,0.25)}
+    .hero-visual img{width:100%;height:100%;object-fit:cover}
+
+    
+    .products{
+      max-width:1200px;margin:28px auto;padding:28px 5%;
+    }
+    .products h2{font-size:20px;margin-bottom:14px;color:#0b1724;font-weight:800}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:18px;
+    }
+
+    .card{
+      background:linear-gradient(180deg,#ffffff,#fbfdff);
+      padding:16px;border-radius:14px;border:1px solid rgba(12,18,28,0.04);
+      box-shadow:0 10px 24px rgba(16,24,32,0.04);transition:transform .18s, box-shadow .18s;
+      display:flex;flex-direction:column;gap:12px;align-items:stretch;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(12,18,28,0.08)}
+    .thumb{height:160px;border-radius:10px;overflow:hidden;background:#101820;display:flex;align-items:center;justify-content:center}
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .card h3{font-size:18px;margin-top:6px}
+    .desc{color:var(--muted);font-size:14px}
+    .price-row{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+    .price{font-weight:800;color:var(--accent);font-size:18px}
+    .add{padding:10px 12px;border-radius:9px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer}
+
+    .badge{background:linear-gradient(90deg,#1d2939,#0b2a36);color:#fff;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+
+    .info-sections{max-width:1200px;margin:18px auto;padding:0 5%;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .panel{background:#fff;padding:18px;border-radius:12px;border:1px solid rgba(12,18,28,0.04);box-shadow:0 8px 20px rgba(12,18,28,0.04)}
+    .panel h3{margin-bottom:8px}
+
+    footer{margin-top:30px;padding:26px 5%;text-align:center;color:var(--muted);font-size:14px}
+
+
+    .cart-sidebar{
+      position:fixed;right:16px;top:80px;width:380px;max-width:92vw;height:calc(100% - 120px);background:linear-gradient(180deg,#ffffff,#fbfdff);
+      border-radius:14px;padding:14px;border:1px solid rgba(12,18,28,0.06);box-shadow:0 30px 80px rgba(12,18,28,0.12);transform:translateX(120%);transition:transform .28s cubic-bezier(.2,.9,.3,1);z-index:1400;
+      display:flex;flex-direction:column;
+    }
+    .cart-sidebar.open{transform:translateX(0)}
+    .cart-sidebar .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .cart-items{flex:1;overflow:auto;padding-right:6px}
+    .cart-row{display:flex;gap:10px;align-items:center;padding:12px 8px;border-radius:10px;border:1px solid rgba(12,18,28,0.04);margin-bottom:10px}
+    .cart-row img{width:70px;height:50px;object-fit:cover;border-radius:6px}
+    .cart-row .meta{flex:1}
+    .cart-row h4{font-size:15px;margin-bottom:6px}
+    .qty-controls{display:flex;align-items:center;gap:8px}
+    .qty-controls button{width:30px;height:30px;border-radius:7px;border:1px solid rgba(12,18,28,0.06);background:#fff;cursor:pointer}
+    .remove-btn{background:transparent;border:none;color:#ff4d4d;cursor:pointer;font-weight:700}
+
+    .cart-footer{padding-top:8px;border-top:1px dashed rgba(12,18,28,0.04);display:flex;flex-direction:column;gap:10px}
+    .checkout-btn{padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;cursor:pointer}
+
+
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;z-index:1600}
+    .modal-backdrop.open{display:flex}
+    .modal-card{width:100%;max-width:520px;background:#fff;padding:20px;border-radius:12px;box-shadow:0 16px 60px rgba(6,10,18,0.3)}
+    .modal-card h3{margin-bottom:10px}
+    .input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(12,18,28,0.06);margin-bottom:12px}
+    .modal-actions{display:flex;gap:10px;justify-content:space-between;align-items:center}
+
+
+    @media (max-width:900px){
+      .hero{flex-direction:column;align-items:flex-start}
+      .hero-visual{width:100%;height:200px}
+      .info-sections{grid-template-columns:1fr}
+      .cart-sidebar{right:10px;top:74px}
+      nav ul{display:none}
+    }
+
+    @media (max-width:520px){
+      header{padding:12px 4%}
+      .logo h1{font-size:16px}
+      .card .thumb{height:140px}
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo" aria-label="SubMarket">
+      <img src="./assets/logo sub.png" alt="SubMarket logo" onerror="this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2246%22 height=%2246%22><rect width=%2246%22 height=%2246%22 fill=%22%230b1720%22/><text x=%225%22 y=%2230%22 font-size=%2212%22 fill=%22%23ff8a4b%22>SM</text></svg>'">
+      <h1>SubMarket</h1>
+    </div>
+
+    <nav aria-label="Главная навигация">
+      <ul>
+        <li><a href="#products">Каталог</a></li>
+        <li><a href="#about">О нас</a></li>
+        <li><a href="#contact">Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-right">
+      <div class="badge" style="background:transparent;color:var(--accent-2);font-weight:800">Доставка по КЗ</div>
+      <div class="header-actions" style="display:flex;gap:8px;align-items:center">
+        <button class="auth-btn" id="login-btn">Вход</button>
+        <button class="auth-btn" id="register-btn">Регистрация</button>
+        <button class="cart-btn" id="open-cart" aria-label="Открыть корзину">
+          🛒 Корзина <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+
+  <main>
+ <section class="hero" role="region" aria-label="Баннер">
+    <h2>Лучшие сабвуферы для твоего звука</h2>
+    <p>Качество, мощность и стиль — всё в одном месте. Подбери сабвуфер для авто или домашней аудиосистемы.</p>
+    <a class="btn" href="#products">Перейти в каталог →</a>
+    
+    <div class="hero-video-container">
+        <video id="hero-video" width="100%" height="auto" muted loop autoplay playsinline poster="images/sub1.jpg">
+            <source src="./assets/subvideo.mp4" type="video/mp4">
+            <source src="assets/subwoofer_demo.webm" type="video/webm">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
+    </section>
+    <section id="products" class="products" aria-labelledby="products-title">
+      <h2 id="products-title">Каталог товаров</h2>
+      <div class="grid product-list">
+
+        <div class="card" data-name="Sony Xplod" data-price="25000" data-img="./assets/sub Xplod.png">
+          <div class="thumb"><img src="./assets/sub Xplod.png" alt="Sony Xplod" onerror="this.style.background='#ddd'"></div>
+          <h3>Sony Xplod</h3>
+          <div class="desc">Мощный сабвуфер 1200Вт — глубокий и чистый бас.</div>
+          <div class="price-row">
+            <div class="price">25 000 ₸</div>
+            <button class="add">В корзину</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="Pioneer BassPro" data-price="32000" data-img="./assets/sub pioneer.png">
+          <div class="thumb"><img src="./assets/sub pioneer.png" alt="Pioneer BassPro" onerror="this.style.background='#ddd'"></div>
+          <h3>Pioneer BassPro</h3>
+          <div class="desc">Чистый бас в компактном корпусе — идеально для авто.</div>
+          <div class="price-row">
+            <div class="price">32 000 ₸</div>
+            <button class="add">В корзину</button>
+          </div>
+        </div>
+
+        <div class="card" data-name="JBL BassBox" data-price="45000" data-img="./assets/sub jbll.png">
+          <div class="thumb"><img src="./assets/sub jbll.png" alt="JBL BassBox" onerror="this.style.background='#ddd'"></div>
+          <h3>JBL BassBox</h3>
+          <div class="desc">Яркий звук и стильный дизайн для музыки любой жанровой направленности.</div>
+          <div class="price-row">
+            <div class="price">45 000 ₸</div>
+            <button class="add">В корзину</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="info-sections" aria-label="Информация">
+      <div class="panel" id="about">
+        <h3>О нас</h3>
+        <p>SubMarket — магазин для тех, кто ценит качественный звук. Мы предлагаем проверенные бренды, гарантию и быструю доставку по всей стране.</p>
+      </div>
+
+      <div class="panel" id="contact">
+        <h3>Контакты</h3>
+        <p>Email: <a href="mailto:support@submarket.kz">support@submarket.kz</a></p>
+        <p>Телефон: <a href="tel:+77075569671">+7 707 556 96 71</a></p>
+        <p>Адрес: Алматы </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© 2025 SubMarket. Все права защищены.</div>
+  </footer>
+
+  <aside class="cart-sidebar" id="cart-sidebar" aria-hidden="true" aria-label="Корзина">
+    <div class="head">
+      <div style="display:flex;gap:12px;align-items:center">
+        <strong>Ваша корзина</strong>
+        <span id="mini-count" style="color:var(--muted)">(<span id="mini-items">0</span> шт.)</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="close-sidebar" title="Закрыть" style="border:none;background:transparent;cursor:pointer;font-weight:700;font-size:18px">✕</button>
+      </div>
+    </div>
+
+    <div class="cart-items" id="cart-items">
+      <p class="empty" style="color:var(--muted);padding:24px;text-align:center">Ваша корзина пуста.</p>
+    </div>
+
+    <div class="cart-footer">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="color:var(--muted)">Итого:</div>
+        <div style="font-weight:800;font-size:18px" id="cart-total">0 ₸</div>
+      </div>
+      <button class="checkout-btn" id="checkout-btn" disabled>Оформить заказ</button>
+    </div>
+  </aside>
+
+  <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button id="modal-close" style="float:right;border:none;background:transparent;font-weight:800;cursor:pointer">✕</button>
+      <h3 id="modal-title">Вход</h3>
+
+      <form id="auth-form" style="margin-top:8px">
+        <input class="input" id="auth-username" type="text" placeholder="Имя пользователя или Email" required>
+        <input class="input" id="auth-password" type="password" placeholder="Пароль" required>
+        <div class="modal-actions" style="margin-top:6px">
+          <button type="submit" class="checkout-btn" style="flex:1">Войти</button>
+          <button id="guest-login" class="auth-btn" style="flex:1">Войти как гость</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop" id="checkout-backdrop" aria-hidden="true">
+    <div class="modal-card">
+      <button id="checkout-close" style="float:right;border:none;background:transparent;font-weight:800;cursor:pointer">✕</button>
+      <h3 id="checkout-title">Оформление заказа</h3>
+
+      <form id="checkout-form" style="margin-top:8px">
+        <input class="input" id="c-name" type="text" placeholder="Ваше имя" required>
+        <input class="input" id="c-phone" type="tel" placeholder="Телефон (+7 7XX XXX XX XX)" pattern="^\+?7?\s?\d{3}\s?\d{3}\s?\d{2}\s?\d{2}$" required>
+        <input class="input" id="c-email" type="email" placeholder="Email для чека" required>
+
+        <input class="input" id="c-city" type="text" placeholder="Город" required>
+        <input class="input" id="c-address" type="text" placeholder="Улица, дом, квартира" required>
+
+        <div style="display:flex;gap:10px">
+          <input class="input" id="card-number" type="text" placeholder="Номер карты (XXXX XXXX XXXX XXXX)" maxlength="19" required style="flex:2">
+          <input class="input" id="card-date" type="text" placeholder="ММ/ГГ" maxlength="5" required style="flex:1">
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <input class="input" id="card-cvc" type="text" placeholder="CVC" maxlength="3" required style="flex:1">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted)">К оплате: <strong id="checkout-final" style="margin-left:8px">0 ₸</strong></div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button type="submit" class="checkout-btn" style="flex:1">Оплатить и подтвердить</button>
+          <button type="button" id="checkout-cancel" class="auth-btn" style="flex:1">Отмена</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+  
+    let cart = [];
+    const cartCountEl = document.getElementById('cart-count');
+    const miniItemsEl = document.getElementById('mini-items');
+    const miniCountEl = document.getElementById('mini-count');
+    const openCartBtn = document.getElementById('open-cart');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const closeSidebarBtn = document.getElementById('close-sidebar');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotalEl = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalClose = document.getElementById('modal-close');
+    const guestBtn = document.getElementById('guest-login');
+    const authForm = document.getElementById('auth-form');
+
+    const checkoutBackdrop = document.getElementById('checkout-backdrop');
+    const checkoutClose = document.getElementById('checkout-close');
+    const checkoutCancel = document.getElementById('checkout-cancel');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutFinal = document.getElementById('checkout-final');
+
+    const productCards = document.querySelectorAll('.card');
+
+ 
+    function saveCart() {
+      localStorage.setItem('submarket_cart_v1', JSON.stringify(cart));
+      updateCartUI();
+    }
+    function loadCart() {
+      try {
+        const c = JSON.parse(localStorage.getItem('submarket_cart_v1'));
+        cart = Array.isArray(c) ? c : [];
+      } catch (e) {
+        cart = [];
+      }
+      updateCartUI();
+    }
+
+    function saveUser(user){
+      localStorage.setItem('submarket_user_v1', JSON.stringify(user));
+    }
+    function loadUser(){
+      try{
+        const u = JSON.parse(localStorage.getItem('submarket_user_v1'));
+        return u || null;
+      }catch(e){return null;}
+    }
+
+   
+    function findCartItem(name){
+      return cart.find(i => i.name === name);
+    }
+
+    function addToCart(name, price, img){
+      const existing = findCartItem(name);
+      if (existing) existing.quantity += 1;
+      else cart.push({name, price: Number(price), quantity:1, img: img || ''});
+      saveCart();
+      openSidebar();
+    }
+
+    function changeQuantity(name, delta){
+      const item = findCartItem(name);
+      if(!item) return;
+      item.quantity += delta;
+      if(item.quantity <= 0){
+        cart = cart.filter(i => i.name !== name);
+      }
+      saveCart();
+    }
+
+    function removeItem(name){
+      cart = cart.filter(i => i.name !== name);
+      saveCart();
+    }
+
+    function calculateTotal(){
+      return cart.reduce((s,i) => s + i.price * i.quantity, 0);
+    }
+
+    function updateCartUI(){
+      
+      const totalItems = cart.reduce((s,i) => s + i.quantity, 0);
+      cartCountEl.textContent = totalItems;
+      miniItemsEl.textContent = totalItems;
+     
+      cartItemsContainer.innerHTML = '';
+      if(cart.length === 0){
+        cartItemsContainer.innerHTML = '<p class="empty" style="color:var(--muted);padding:24px;text-align:center">Ваша корзина пуста.</p>';
+        cartTotalEl.textContent = '0 ₸';
+        checkoutBtn.disabled = true;
+        checkoutFinal.textContent = '0 ₸';
+        return;
+      }
+      cart.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML = `
+          <img src="${item.img || './assets/placeholder.png'}" alt="${item.name}" onerror="this.style.background='#ececec'">
+          <div class="meta">
+            <h4>${item.name}</h4>
+            <div style="display:flex;gap:8px;align-items:center;color:var(--muted);font-size:14px">${item.price.toLocaleString('ru-RU')} ₸ • <strong>${(item.price*item.quantity).toLocaleString('ru-RU')} ₸</strong></div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:10px">
+              <div class="qty-controls">
+                <button class="qty-minus" data-name="${item.name}" aria-label="уменьшить">−</button>
+                <span style="padding:0 8px">${item.quantity}</span>
+                <button class="qty-plus" data-name="${item.name}" aria-label="увеличить">+</button>
+              </div>
+              <button class="remove-btn" data-name="${item.name}">Удалить</button>
+            </div>
+          </div>
+        `;
+        cartItemsContainer.appendChild(row);
+      });
+
+      const total = calculateTotal();
+      cartTotalEl.textContent = total.toLocaleString('ru-RU') + ' ₸';
+      checkoutFinal.textContent = total.toLocaleString('ru-RU') + ' ₸';
+      checkoutBtn.disabled = false;
+    }
+
+  
+    function openSidebar(){
+      cartSidebar.classList.add('open');
+      cartSidebar.setAttribute('aria-hidden','false');
+      updateCartUI();
+    }
+    function closeSidebar(){
+      cartSidebar.classList.remove('open');
+      cartSidebar.setAttribute('aria-hidden','true');
+    }
+
+    productCards.forEach(card => {
+      const name = card.dataset.name;
+      const price = card.dataset.price;
+      const img = card.dataset.img;
+      const btn = card.querySelector('.add');
+      btn.addEventListener('click', () => addToCart(name, price, img));
+    });
+
+
+    openCartBtn.addEventListener('click', openSidebar);
+    closeSidebarBtn.addEventListener('click', closeSidebar);
+
+
+    cartItemsContainer.addEventListener('click', (e) => {
+      if(e.target.classList.contains('qty-plus')){
+        const name = e.target.dataset.name;
+        changeQuantity(name, 1);
+      } else if(e.target.classList.contains('qty-minus')){
+        const name = e.target.dataset.name;
+        changeQuantity(name, -1);
+      } else if(e.target.classList.contains('remove-btn')){
+        const name = e.target.dataset.name;
+        removeItem(name);
+      }
+    });
+
+
+    checkoutBtn.addEventListener('click', () => {
+      if(cart.length === 0){ alert('Добавьте товары в корзину для оформления.'); return; }
+      checkoutBackdrop.classList.add('open');
+      checkoutBackdrop.style.display = 'flex';
+      checkoutBackdrop.setAttribute('aria-hidden','false');
+    
+      checkoutFinal.textContent = calculateTotal().toLocaleString('ru-RU') + ' ₸';
+    });
+
+    
+    checkoutClose.addEventListener('click', () => {
+      checkoutBackdrop.classList.remove('open');
+      checkoutBackdrop.style.display = 'none';
+      checkoutBackdrop.setAttribute('aria-hidden','true');
+    });
+    checkoutCancel.addEventListener('click', () => {
+      checkoutBackdrop.classList.remove('open'); checkoutBackdrop.style.display='none'; checkoutBackdrop.setAttribute('aria-hidden','true');
+    });
+
+  
+    checkoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const total = calculateTotal();
+      alert('Заказ на сумму ' + total.toLocaleString('ru-RU') + ' ₸ успешно оформлен! (демо)');
+      cart = []; saveCart();
+      checkoutBackdrop.classList.remove('open'); checkoutBackdrop.style.display='none';
+    });
+
+
+    loginBtn.addEventListener('click', () => {
+      modalBackdrop.classList.add('open'); modalBackdrop.style.display='flex'; modalBackdrop.setAttribute('aria-hidden','false');
+      document.getElementById('modal-title').textContent = 'Вход';
+    });
+    registerBtn.addEventListener('click', () => {
+      modalBackdrop.classList.add('open'); modalBackdrop.style.display='flex'; modalBackdrop.setAttribute('aria-hidden','false');
+      document.getElementById('modal-title').textContent = 'Регистрация';
+    });
+    modalClose.addEventListener('click', () => {
+      modalBackdrop.classList.remove('open'); modalBackdrop.style.display='none'; modalBackdrop.setAttribute('aria-hidden','true');
+    });
+    guestBtn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const guest = {name:'Гость', type:'guest'};
+      saveUser(guest);
+      modalBackdrop.classList.remove('open'); modalBackdrop.style.display='none';
+      alert('Вход как Гость выполнен. Приятных покупок!');
+    });
+
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+    
+      const username = document.getElementById('auth-username').value || 'User';
+      const user = {name: username, type:'registered'};
+      saveUser(user);
+      modalBackdrop.classList.remove('open'); modalBackdrop.style.display='none';
+      alert('Вход выполнен как ' + username);
+    });
+
+    
+    modalBackdrop.addEventListener('click', (e) => {
+      if(e.target === modalBackdrop){ modalBackdrop.classList.remove('open'); modalBackdrop.style.display='none'; modalBackdrop.setAttribute('aria-hidden','true'); }
+    });
+    checkoutBackdrop.addEventListener('click', (e) => {
+      if(e.target === checkoutBackdrop){ checkoutBackdrop.classList.remove('open'); checkoutBackdrop.style.display='none'; checkoutBackdrop.setAttribute('aria-hidden','true'); }
+    });
+
+    
+    const cn = document.getElementById('card-number');
+    if(cn){
+      cn.addEventListener('input', function(e){
+        let v = this.value.replace(/\D/g, '').slice(0,16);
+        let parts = v.match(/.{1,4}/g);
+        this.value = parts ? parts.join(' ') : v;
+      });
+    }
+    const cd = document.getElementById('card-date');
+    if(cd){
+      cd.addEventListener('input', function(e){
+        let v = this.value.replace(/\D/g, '').slice(0,4);
+        if(v.length>2) v = v.slice(0,2)+'/'+v.slice(2);
+        this.value = v;
+      });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        const sel = document.querySelector(this.getAttribute('href'));
+        if(sel) sel.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+   
+    loadCart();
+
+  
+    window.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape'){
+        if(cartSidebar.classList.contains('open')) closeSidebar();
+        if(modalBackdrop.classList.contains('open')) { modalBackdrop.classList.remove('open'); modalBackdrop.style.display='none'; }
+        if(checkoutBackdrop.classList.contains('open')) { checkoutBackdrop.classList.remove('open'); checkoutBackdrop.style.display='none'; }
+      }
+    });
+
+    
+    modalBackdrop.addEventListener('transitionend', () => {
+      if(modalBackdrop.classList.contains('open')){
+        document.getElementById('auth-username').focus();
+      }
+    });
+
+  </script>
+</body>
+</html>
